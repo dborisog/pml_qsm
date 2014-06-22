@@ -1,0 +1,54 @@
+Title: Qualitative activity recognition of the unilateral dumbbell biceps curl, a course project of Practical Machine Learning, June 2014.
+========================================================
+Author: Dmitry Borisoglebsky
+
+Github: https://github.com/dborisog/pml_qsm
+
+Introduction
+============
+This report finalizes a course project of Practical Machine Learning June 2014 [1], a course delivered by staff of John Hopkins University Jeff Leek, Brian Caffo, and Roger D. Peng via Coursera. This course project was inspired by a human activity recognition (HAR) project [2 , 3].
+
+This HAR project was researching qualitative physical activity recognition, in different words how well an activity was executed. Six young adults were executing ten repetition of the unilateral dumbbell biceps curl in five manners: (A) exactly according to the specification, (B) throwing the elbows to the front, (C) lifting the dumbbell only halfway, (D) lowering the dumbbell only halfway, (E) throwing the hips to the front, where B – E represent common mistakes. These executions were recorded via four sensors on the belt, arm, forearm, and dumbbell.
+
+Data from this HAR project was delivered to the course students in two datasets, a training dataset of 19622 observations and 158 variables plus a manner 'classe' variable, and a testing dataset of 20 observations and 158 variables without 'classe' variable. The course project's objective is to predict the manner 'classe' of the testing dataset.
+
+Methods
+=======
+Specifics of the objective and the course limit methods could be applied by the author. The major part of the design of experiment was defined by the HAR project researchers, the HAR project's objective was set, exercise and types of mistakes were chosen, means to collect the data were selected, and data was collected. This course project also de facto narrows down the analytical means leaving methods that have been mentioned within the course: data preprocessing, modeling and prediction, analysis organization and sharing.
+
+Data pre-processing. Training dataset is relatively large to split into training and evaluation datasets in proportion 75% and 25%, respectively. The number of variables is relatively large to assume that some variables might be excluded without loosing on variability and accuracy, near to zero variable and non-principle components were identified and filtered out.
+
+Modeling and prediction. Having the manners 'classe' variable within the original training dataset and the qualitative nature of 'classe' variable focuses the author on classification and algorithms. Random forest is one of the most accurate classification algorithm, the author assumed that this algorithm would allow to create a model for the data on his desktop PC, and thereby selected random forests for modeling and prediction.
+
+Reproduction. The course project assumes that the predicted results and report would be submitted on Coursera website for further evaluation, and the project's files would be available online via Github. The file organization structure proposed by the teaching personal of this and other data analysis MOOC from John Hopkins University was used in this project.
+
+R scripting language and 'caret' package were major major preprocessing and analysis tools used in this project.
+
+Results
+=======
+Data preprocessing are possible to find in the appendix and '\RCode\script.R' file of the github repository. 
+'confusionMatrix' function of 'caret' package produces the following output for predicted and actual values of 'classe' variable of evaluation dataset.
+```{r include=FALSE, cache=FALSE}
+setwd('C:/Users/user/gitrep/pml_qsm/')
+source("./RCode/script.R")
+```
+```{r}
+print(confusionMatrix(evalPredict, evaluation$classe))
+```
+
+The prediction for testing dataset are shown in the following script.
+```{r}
+predict(modelFit,testPC)
+```
+
+Discussion and conclusions
+===========================
+The confusionMatrix' output shows that the developed classification model delivers accurate results, even better results than in the original research [3], see confusion matrix and other parameters. Assuming that training, evaluation, and testing datasets share the same bias, it is possible to conclude that predictions are accurate as well.
+
+References
+==========
+ 1  https://www.coursera.org/course/predmachlearn, accessed 2014-06-22. 
+ 
+ 2  http://groupware.les.inf.puc-rio.br/har, accessed 2014-06-22.
+ 
+ 3  Velloso, E.; Bulling, A.; Gellersen, H.; Ugulino, W.; Fuks, H. Qualitative Activity Recognition of Weight Lifting Exercises. Proceedings of 4th Augmented Human (AH) International Conference in cooperation with ACM SIGCHI (Augmented Human'13) . Stuttgart, Germany: ACM SIGCHI, 2013. 

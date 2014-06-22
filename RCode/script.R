@@ -1,7 +1,7 @@
 #load data
 library('caret', 'kernlab', 'RANN')
 # set working directory
-setwd("C:/Users/user/gitrep/pml_qsm/")
+setwd('C:/Users/user/gitrep/pml_qsm/')
 
 df.training <- read.csv('./Data/pml-training.csv')
 df.testing <- read.csv('./Data/pml-testing.csv')
@@ -39,13 +39,15 @@ evalPC <- predict(preProc,evaluation[,-104])
 testPC <- predict(preProc,df.testing[,-104])
 
 # create random forest model
-modelFit <- train(training$classe ~ ., method='rf',data=trainPC)
+# train random forest is a heavy operation, so use the model from file
+
+if (file.exists('./RCode/randomForest_PCA.RDS')) {
+  modelFit <- readRDS('./RCode/randomForest_PCA.RDS')
+} else {
+  modelFit <- train(training$classe ~ ., method='rf',data=trainPC)
+  saveRDS(modelFit, './RCode/randomForest_PCA.RDS')
+}
   
-  # train random forest is a heavy operation, so use the model from file
-  # dput(modelFit, file='./RCode/randForest_PCA.txt') 
-  # in addition to that, this file is archived -- the original is ~100 MBt, now ~20MBts
-
-
 # predict for evaluation dataset and testing (submission) dataset
 evalPredict <- predict(modelFit,evalPC)
 print(confusionMatrix(evalPredict, evaluation$classe))
@@ -53,13 +55,15 @@ print(confusionMatrix(evalPredict, evaluation$classe))
 testPredict <- predict(modelFit,testPC)
 
 
-#prepare to submit ansers
-pml_write_files = function(x){
-  n = length(x)
-  for(i in 1:n){
-    filename = paste0("./Data/","problem_id_",i,".txt")
-    write.table(x[i],file=filename,quote=FALSE,row.names=FALSE,col.names=FALSE)
-  }
-}
+# prepare to submit ansers
+# uncomment the following lines and run separately
 
-pml_write_files(as.character(testPredict))
+# pml_write_files = function(x){
+#   n = length(x)
+#   for(i in 1:n){
+#     filename = paste0("./Data/","problem_id_",i,".txt")
+#     write.table(x[i],file=filename,quote=FALSE,row.names=FALSE,col.names=FALSE)
+#   }
+# }
+# 
+# pml_write_files(as.character(testPredict))
